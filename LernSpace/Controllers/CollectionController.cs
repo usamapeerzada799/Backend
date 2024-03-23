@@ -90,7 +90,14 @@ namespace LernSpace.Controllers
         [HttpGet]
         public HttpResponseMessage GetAllCollection()
         {
-            var data= db.Collection.Select(c => new { c.id,c.picPath,c.eText,c.uText,c.type}).ToList();
+            var data= db.Collection.Select(c => new { c.id,c.picPath,c.eText,c.uText,c.type,c.C_group}).ToList();
+            return Request.CreateResponse(data);
+        }
+        [HttpGet]
+        public HttpResponseMessage GetCollectionImgPath(int Cid)
+        {
+
+            var data= db.Collection.Where(e=>e.id==Cid).Select(c => new {c.picPath,c.eText,c.uText}).ToList();
             return Request.CreateResponse(data);
         }
     }

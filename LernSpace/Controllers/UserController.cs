@@ -9,12 +9,15 @@ using System.Net.Http;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace LernSpace.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class UserController : ApiController
     {
         SlowlernerDbEntities db= new SlowlernerDbEntities();
+
         [HttpGet]
         public HttpResponseMessage deleteAppdata(int appid)
         {
@@ -94,7 +97,8 @@ namespace LernSpace.Controllers
                               pat.profPicPath,
                               pat.stage,
                               pat.name,
-                              pat.pid
+                              
+                              pat.age
                           })
                          /* Select(appoint => new {
                               appoint.id,
@@ -116,7 +120,7 @@ namespace LernSpace.Controllers
         {
             db.Appointment.Add(appoint);
             db.SaveChanges();
-            return Request.CreateResponse(HttpStatusCode.OK);
+            return Request.CreateResponse(HttpStatusCode.OK,"Appointment Add SuccessFully");
         }
         [HttpGet]
         public HttpResponseMessage showSpacificAppointmentData(int AppointmentId,int pid)
@@ -128,10 +132,11 @@ namespace LernSpace.Controllers
                 {
                     collect.eText,
                     collect.uText,
+                    collect.type,
                     all.pTestColletFedback.feedback,
-                    
-                   
-                });
+
+
+                }) ;
             var PracticeData = db.Appointment.Where(e => e.id == AppointmentId && e.patientId == pid)
                 .Join(db.PracticeCollection, appoint => appoint.pracId, practicecollection => practicecollection.pracId, (appoint, pracCollection) => new { appoint, pracCollection })
 
@@ -140,6 +145,7 @@ namespace LernSpace.Controllers
                 {
                     collect.eText,
                     collect.uText,
+                    collect.type,
                     all.appoint.userId
                 }).ToList();
             var uid = PracticeData[0].userId;
@@ -163,7 +169,7 @@ namespace LernSpace.Controllers
             var name = request["name"];
             var age = int.Parse(request["age"]);
             var gender = request["gender"];
-            var stage = int.Parse(request["stage"]);
+           
            
             var password = request["password"]; 
             var profpic = request.Files["profpic"];
@@ -174,7 +180,7 @@ namespace LernSpace.Controllers
             patient.gender = gender;
             patient.name = name;    
             patient.userName = username;
-            patient.stage = stage;
+            patient.stage = 1;
             patient.firstTime = true;
             patient.password = password;
            
@@ -193,5 +199,49 @@ namespace LernSpace.Controllers
             return Request.CreateResponse(HttpStatusCode.OK, "registerd");
         }
 
+        [HttpGet]
+        public HttpResponseMessage GetAllAppointmentsDates(int pid)
+        {
+            try
+            {
+                var data = db.Appointment.Where(e => e.patientId == pid).Select(appointdata => new 
+                {
+                    appointdata.id,
+                    appointdata.appointmentDate
+                });
+                return Request.CreateResponse(HttpStatusCode.OK,data);
+            }
+            catch (Exception ex) {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "error ");
+            }
+        }
+        [HttpGet]
+        public HttpResponseMessage GetPatientId(int cid)
+        {
+            try
+            {
+                var data = db.User.Where(e => e.uid == cid)
+                    .Join(db.UserPatient, user => user.uid, UserPatient => UserPatient.userId, (user, UserPatient) => new { user, UserPatient })
+                    .Join(db.Appointment, user => user.UserPatient.patientId, Appointment => Appointment.patientId, (app, pat) => new
+                    {
+                        pat.id,
+                        pat.patientId,
+                        pat.pracId,
+                        pat.testId,
+                        pat.feedback,
+                        pat.nextAppointDate,
+
+                    }).FirstOrDefault();
+                   /* {
+                        UserPatient.patientId
+                    }).FirstOrDefault(); */
+
+                return Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "error ");
+            }
+        }
     }
 }

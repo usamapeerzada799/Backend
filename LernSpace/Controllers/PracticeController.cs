@@ -54,6 +54,7 @@ namespace LernSpace.Controllers
                 .Join(db.PracticeCollection,practic=>practic.id,pracCollection=>pracCollection.pracId, (practic, pracCollection) => new { practic, pracCollection })
                 .Join(db.Collection,ppc=>ppc.pracCollection.collectId,collect=>collect.id,(ppc,collect)=> new
                 {
+
                     collect.id,
                     collect.uText,
                     collect.eText,
@@ -61,7 +62,9 @@ namespace LernSpace.Controllers
                     collect.picPath,
                     collect.C_group,
                     collect.audioPath,
-                    ppc.practic.title
+                    ppc.practic.title,
+                    pracId= ppc.practic.id
+
                     
                 });
             

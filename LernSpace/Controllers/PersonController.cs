@@ -8,9 +8,11 @@ using System.Net.Http;
 using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace LernSpace.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class PersonController : ApiController
     {
         SlowlernerDbEntities db= new SlowlernerDbEntities();

@@ -7,9 +7,11 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace LernSpace.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class TestController : ApiController
     {
         SlowlernerDbEntities db = new SlowlernerDbEntities();
@@ -42,10 +44,17 @@ namespace LernSpace.Controllers
                     collect.picPath,
                     collect.C_group,
                     collect.audioPath,
+                    ppc.testCollection.questionTitle,
                     ppc.testCollection.op1,
                     ppc.testCollection.op2,
-                    ppc.testCollection.op3
+                    ppc.testCollection.op3,
+                    ppc.test.title,
+                    testId=ppc.test.id,
+                    Op1ImagePath = db.Collection.Where(c => c.id == ppc.testCollection.op1).Select(c => c.picPath).FirstOrDefault(),
+                    Op2ImagePath = db.Collection.Where(c => c.id == ppc.testCollection.op2).Select(c => c.picPath).FirstOrDefault(),
+                    Op3ImagePath = db.Collection.Where(c => c.id == ppc.testCollection.op3).Select(c => c.picPath).FirstOrDefault()
                 });
+
 
             if (data.Any())
             {

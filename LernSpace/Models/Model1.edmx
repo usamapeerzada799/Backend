@@ -9,7 +9,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="userId" Type="int" Nullable="false" />
           <Property Name="testId" Type="int" />
           <Property Name="pracId" Type="int" />
@@ -166,6 +166,7 @@
           <Property Name="op1" Type="int" />
           <Property Name="op2" Type="int" />
           <Property Name="op3" Type="int" />
+          <Property Name="questionTitle" Type="nvarchar" MaxLength="200" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -791,7 +792,7 @@
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="userId" Type="Int32" Nullable="false" />
           <Property Name="testId" Type="Int32" />
           <Property Name="pracId" Type="Int32" />
@@ -1005,6 +1006,7 @@
           <Property Name="op1" Type="Int32" />
           <Property Name="op2" Type="Int32" />
           <Property Name="op3" Type="Int32" />
+          <Property Name="questionTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Collection" Relationship="Self.fk_collectionT" FromRole="TestCollection" ToRole="Collection" />
           <NavigationProperty Name="Collection1" Relationship="Self.FK_op1" FromRole="TestCollection" ToRole="Collection" />
           <NavigationProperty Name="Collection2" Relationship="Self.FK_op2" FromRole="TestCollection" ToRole="Collection" />
@@ -1817,6 +1819,7 @@
                 <ScalarProperty Name="op1" ColumnName="op1" />
                 <ScalarProperty Name="op2" ColumnName="op2" />
                 <ScalarProperty Name="op3" ColumnName="op3" />
+                <ScalarProperty Name="questionTitle" ColumnName="questionTitle" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

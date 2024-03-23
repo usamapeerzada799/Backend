@@ -26,6 +26,7 @@ namespace LernSpace.Models
         public Nullable<int> op1 { get; set; }
         public Nullable<int> op2 { get; set; }
         public Nullable<int> op3 { get; set; }
+        public string questionTitle { get; set; }
     
         public virtual Collection Collection { get; set; }
         public virtual Collection Collection1 { get; set; }
