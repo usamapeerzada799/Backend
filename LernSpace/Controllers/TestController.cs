@@ -17,17 +17,22 @@ namespace LernSpace.Controllers
         SlowlernerDbEntities db = new SlowlernerDbEntities();
         public HttpResponseMessage AddNewTest(TestInfo info)
         {
-            
-            db.Test.Add(info.test);
-            db.SaveChanges();
-            foreach (var item in info.collectionsIds)
+            try
             {
-                item.testId = info.test.id;
+                db.Test.Add(info.test);
+                db.SaveChanges();
+                foreach (var item in info.collectionsIds)
+                {
+                    item.testId = info.test.id;
+                }
+                db.TestCollection.AddRange(info.collectionsIds);
+
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK,"Data Save");
+            }catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK,ex.Message);
             }
-            db.TestCollection.AddRange(info.collectionsIds);
-           
-            db.SaveChanges();
-            return new HttpResponseMessage(HttpStatusCode.OK);
         }
         [HttpGet]
         public HttpResponseMessage userDefindTest(int Uid)

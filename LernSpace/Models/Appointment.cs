@@ -14,18 +14,25 @@ namespace LernSpace.Models
     
     public partial class Appointment
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Appointment()
+        {
+            this.AppointmentPractic = new HashSet<AppointmentPractic>();
+            this.AppointmentTest = new HashSet<AppointmentTest>();
+        }
+    
         public int id { get; set; }
         public int userId { get; set; }
-        public Nullable<int> testId { get; set; }
-        public Nullable<int> pracId { get; set; }
         public int patientId { get; set; }
         public System.DateTime appointmentDate { get; set; }
         public System.DateTime nextAppointDate { get; set; }
         public string feedback { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AppointmentPractic> AppointmentPractic { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<AppointmentTest> AppointmentTest { get; set; }
         public virtual Patient Patient { get; set; }
-        public virtual Practice Practice { get; set; }
-        public virtual Test Test { get; set; }
         public virtual User User { get; set; }
     }
 }

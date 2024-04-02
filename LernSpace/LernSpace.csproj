@@ -140,6 +140,12 @@
     <Compile Include="Models\Appointment.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\AppointmentPractic.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\AppointmentTest.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Collection.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -161,6 +167,7 @@
     <Compile Include="Models\Patient.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\PatientAppointmet.cs" />
     <Compile Include="Models\PatientTestCollectionFeedback.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

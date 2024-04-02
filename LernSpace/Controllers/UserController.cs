@@ -59,9 +59,14 @@ namespace LernSpace.Controllers
         public HttpResponseMessage SignIn(string username,string password)
         {
             var data=db.User.Where(e=>e.username== username && e.password==password).Select(user=> new {user.uid,user.type,user.profPicPath,user.name}).FirstOrDefault();
-            if(data==null)
+            if (data == null)
             {
-                return Request.CreateResponse(HttpStatusCode.NonAuthoritativeInformation,"invalid Username Or Password");
+                var pdata = db.Patient.Where(e => e.userName == username && e.password == password).Select(user => new { user.pid, user.firstTime, user.profPicPath, user.name }).FirstOrDefault();
+                if (pdata != null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, pdata);
+                }
+                return Request.CreateResponse(HttpStatusCode.NonAuthoritativeInformation, "invalid Username Or Password");
             }
             return Request.CreateResponse(HttpStatusCode.OK, data);
         }
@@ -90,8 +95,7 @@ namespace LernSpace.Controllers
                           {
                               app.id,
                               app.patientId,
-                              app.pracId,
-                              app.testId,
+                             
                               app.feedback,
                               app.nextAppointDate,
                               pat.profPicPath,
@@ -116,17 +120,40 @@ namespace LernSpace.Controllers
         }
 
         [HttpPost]
-        public  HttpResponseMessage AddAppointment(Appointment appoint)
+        public  HttpResponseMessage AddAppointment(PatientAppointmet patientAppointmet)
         {
-            db.Appointment.Add(appoint);
-            db.SaveChanges();
-            return Request.CreateResponse(HttpStatusCode.OK,"Appointment Add SuccessFully");
+            try
+            {
+                db.Appointment.Add(patientAppointmet.Appointment);
+                db.SaveChanges();
+                if (patientAppointmet.AppointmentPractics != null)
+                {
+                    foreach (var item in patientAppointmet.AppointmentPractics)
+                    {
+                        item.appointmentId = patientAppointmet.Appointment.id;
+                    }
+                    db.AppointmentPractic.AddRange(patientAppointmet.AppointmentPractics);
+                }
+                if (patientAppointmet.AppointmentTests != null)
+                {
+                    foreach (var item in patientAppointmet.AppointmentTests)
+                    {
+                        item.appointmentId = patientAppointmet.Appointment.id;
+                    }
+                    db.AppointmentTest.AddRange(patientAppointmet.AppointmentTests);
+                }
+               
+               
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, "Appointment Add SuccessFully");
+            }catch (Exception ex) { return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message); }
         }
         [HttpGet]
         public HttpResponseMessage showSpacificAppointmentData(int AppointmentId,int pid)
         {
             var TestData = db.Appointment.Where(e => e.id == AppointmentId && e.patientId == pid)
-                .Join(db.TestCollection, appoint => appoint.testId, testcollection => testcollection.testId, (appoint, testcollection) => new { appoint, testcollection }).
+                .Join(db.AppointmentTest, appoint => appoint.id, AppointmentTest => AppointmentTest.appointmentId, (appoint, appointmentTest) => new { appoint, appointmentTest })
+                .Join(db.TestCollection, appointtest => appointtest.appointmentTest.testId, testcollection => testcollection.testId, (appoint, testcollection) => new { appoint, testcollection }).
                 Join(db.PatientTestCollectionFeedback, ttc => ttc.testcollection.id, ptcf => ptcf.id, (appointTestCollection, pTestColletFedback) => new { appointTestCollection, pTestColletFedback })
                 .Join(db.Collection, ptcf => ptcf.pTestColletFedback.collectionId, collect => collect.id, (all, collect) => new
                 {
@@ -138,15 +165,16 @@ namespace LernSpace.Controllers
 
                 }) ;
             var PracticeData = db.Appointment.Where(e => e.id == AppointmentId && e.patientId == pid)
-                .Join(db.PracticeCollection, appoint => appoint.pracId, practicecollection => practicecollection.pracId, (appoint, pracCollection) => new { appoint, pracCollection })
+                .Join(db.AppointmentPractic, appoint => appoint.id, appoimtPrac => appoimtPrac.appointmentId, (appoint, appointmentPractic) => new { appoint, appointmentPractic })
+                .Join(db.PracticeCollection, AppointmentPractic => AppointmentPractic.appointmentPractic.practiceId, practicecollection => practicecollection.pracId, (appoint, pracCollection) => new { appoint, pracCollection })
 
-                
+
                 .Join(db.Collection, ptcf => ptcf.pracCollection.collectId, collect => collect.id, (all, collect) => new
                 {
                     collect.eText,
                     collect.uText,
                     collect.type,
-                    all.appoint.userId
+                    all.appoint.appoint.userId,     
                 }).ToList();
             var uid = PracticeData[0].userId;
             var result = new {uid, PracticeData, TestData };
@@ -226,8 +254,7 @@ namespace LernSpace.Controllers
                     {
                         pat.id,
                         pat.patientId,
-                        pat.pracId,
-                        pat.testId,
+                      
                         pat.feedback,
                         pat.nextAppointDate,
 
@@ -242,6 +269,26 @@ namespace LernSpace.Controllers
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "error ");
             }
+        }
+        [HttpGet]
+        public HttpResponseMessage GetAllpatiets(int Did) 
+        {
+            try { 
+                var data= db.User.Where (e => e.uid == Did)
+                    .Join(db.UserPatient,user => user.uid,userpatient=>userpatient.userId,(user,userpatient)=>new {user, userpatient })
+                    .Join(db.Patient, UserPatient => UserPatient.userpatient.patientId, patient => patient.pid, (userPatient, patient) => new {
+                    patient.pid,
+                    patient.name,
+                    patient.age,
+                    patient.profPicPath
+                    
+                    }).ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex) {
+                return Request.CreateResponse(HttpStatusCode.OK, ex.Message);
+            }
+            
         }
     }
 }

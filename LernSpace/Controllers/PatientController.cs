@@ -23,10 +23,11 @@ namespace LernSpace.Controllers
             var data = db.Patient
              .Where(e => e.pid == Pid)
              .Join(db.Appointment, p => p.pid, ap => ap.patientId, (patien, appoint) => new { patien, appoint })
-             .Join(db.PracticeCollection, ap => ap.appoint.pracId, pc => pc.pracId, (appoint, pracCollect) => new { appoint, pracCollect })
+             .Join(db.AppointmentPractic, p => p.appoint.id, c => c.appointmentId, (appointment, appointPractic) => new { appointment, appointPractic })
+             .Join(db.PracticeCollection, ap => ap.appointPractic.practiceId, pc => pc.pracId, (appoint, pracCollect) => new { appoint, pracCollect })
              .Join(db.Collection, prac => prac.pracCollect.collectId, c => c.id, (pracCollect, collect) => new
              {
-                 AppointmentDate = pracCollect.appoint.appoint.id,
+                 AppointmentDate = pracCollect.appoint.appointPractic.Appointment.id,
                  practiceCollectionId=pracCollect.pracCollect.id,
                  CollectId = collect.id,
                  Path = collect.picPath,
@@ -34,12 +35,13 @@ namespace LernSpace.Controllers
                  Utext = collect.uText,
                  Group = collect.C_group,
                  Type = collect.type,
+                 collect.audioPath,
              })
              .OrderByDescending(e => e.AppointmentDate)
              .GroupBy(e => e.AppointmentDate)
              .Select(group => new
              {
-                 AppointmentDate = group.Key,
+                 Appointment = group.Key,
                  Collections = group.Select(e => new
                  {  
                      e.practiceCollectionId,
@@ -49,6 +51,9 @@ namespace LernSpace.Controllers
                      e.Utext,
                      e.Group,
                      e.Type,
+                     e.audioPath,
+                     e.AppointmentDate
+                     
                  }).ToList()
              });
             // .FirstOrDefault();
@@ -67,10 +72,11 @@ namespace LernSpace.Controllers
             var data = db.Patient
              .Where(e => e.pid == Pid)
              .Join(db.Appointment, p => p.pid, ap => ap.patientId, (patien, appoint) => new { patien, appoint })
-             .Join(db.TestCollection, ap => ap.appoint.testId, tc => tc.testId, (appoint, testcollect) => new { appoint, testcollect })
+             .Join(db.AppointmentTest, p => p.appoint.id, c => c.appointmentId, (appointment, appointTest) => new {appointment,appointTest})
+             .Join(db.TestCollection, ap => ap.appointTest.testId, tc => tc.testId, (app, testcollect) => new { app, testcollect })
              .Join(db.Collection, test => test.testcollect.collectId, c => c.id, (testCollect, collect) => new
              {
-                 AppointmentDate = testCollect.appoint.appoint.id,
+                 AppointmentDate = testCollect.app.appointment.appoint.id,
                  testCollectionID= testCollect.testcollect.id,
                  CollectId = collect.id,
                  Path = collect.picPath,
@@ -78,9 +84,18 @@ namespace LernSpace.Controllers
                  Utext = collect.uText,
                  Group = collect.C_group,
                  Type = collect.type,
+                 collectAudio=collect.audioPath,
                  Opt1 = testCollect.testcollect.op1,
                  Opt2 = testCollect.testcollect.op2,
-                 Opt3 = testCollect.testcollect.op3
+                 Opt3 = testCollect.testcollect.op3,
+                Question= testCollect.testcollect.questionTitle,
+                  Op1ImagePath = db.Collection.Where(c => c.id == testCollect.testcollect.op1).Select(c => c.picPath).FirstOrDefault(),
+                 Op2ImagePath = db.Collection.Where(c => c.id == testCollect.testcollect.op2).Select(c => c.picPath).FirstOrDefault(),
+                 Op3ImagePath = db.Collection.Where(c => c.id == testCollect.testcollect.op3).Select(c => c.picPath).FirstOrDefault(),
+                 Op1Audio = db.Collection.Where(c => c.id == testCollect.testcollect.op1).Select(c => c.audioPath).FirstOrDefault(),
+                 Op2Audio = db.Collection.Where(c => c.id == testCollect.testcollect.op2).Select(c => c.audioPath).FirstOrDefault(),
+                 Op3Audio = db.Collection.Where(c => c.id == testCollect.testcollect.op3).Select(c => c.audioPath).FirstOrDefault(),
+
              })
              .OrderByDescending(e => e.AppointmentDate)
              .GroupBy(e => e.AppointmentDate)
@@ -99,8 +114,10 @@ namespace LernSpace.Controllers
                      e.Opt1,
                      e.Opt2,
                      e.Opt3,
-
-
+                     e.Op1ImagePath, e.Op2ImagePath,e.Op3ImagePath,
+                     e.Question,
+                     e.collectAudio,
+                     e.Op1Audio,e.Op2Audio,e.Op3Audio,
                  }).ToList()
              });
              

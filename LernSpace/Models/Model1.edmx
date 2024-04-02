@@ -11,12 +11,26 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="userId" Type="int" Nullable="false" />
-          <Property Name="testId" Type="int" />
-          <Property Name="pracId" Type="int" />
           <Property Name="patientId" Type="int" Nullable="false" />
           <Property Name="appointmentDate" Type="datetime" Nullable="false" />
           <Property Name="nextAppointDate" Type="datetime" Nullable="false" />
           <Property Name="feedback" Type="varchar" MaxLength="40" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AppointmentPractic">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="appointmentId" Type="int" />
+          <Property Name="practiceId" Type="int" />
+        </EntityType>
+        <EntityType Name="AppointmentTest">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="appointmentId" Type="int" />
+          <Property Name="testId" Type="int" />
         </EntityType>
         <EntityType Name="Collection">
           <Key>
@@ -187,6 +201,30 @@
           <Property Name="userId" Type="int" Nullable="false" />
           <Property Name="patientId" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="AppointmentId">
+          <End Role="Appointment" Type="Self.Appointment" Multiplicity="0..1" />
+          <End Role="AppointmentPractic" Type="Self.AppointmentPractic" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="AppointmentPractic">
+              <PropertyRef Name="appointmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AppointmetId">
+          <End Role="Appointment" Type="Self.Appointment" Multiplicity="0..1" />
+          <End Role="AppointmentTest" Type="Self.AppointmentTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="AppointmentTest">
+              <PropertyRef Name="appointmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_collectionPtc">
           <End Role="Collection" Type="Self.Collection" Multiplicity="1" />
           <End Role="PatientTestCollectionFeedback" Type="Self.PatientTestCollectionFeedback" Multiplicity="*" />
@@ -535,18 +573,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_pracV">
-          <End Role="Practice" Type="Self.Practice" Multiplicity="0..1" />
-          <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Practice">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="pracId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="fk_test">
           <End Role="Test" Type="Self.Test" Multiplicity="1" />
           <End Role="TestCollection" Type="Self.TestCollection" Multiplicity="*" />
@@ -583,18 +609,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_testV">
-          <End Role="Test" Type="Self.Test" Multiplicity="0..1" />
-          <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Test">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="testId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="fk_user">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
@@ -619,8 +633,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="PracticeId">
+          <End Role="Practice" Type="Self.Practice" Multiplicity="0..1" />
+          <End Role="AppointmentPractic" Type="Self.AppointmentPractic" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Practice">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="AppointmentPractic">
+              <PropertyRef Name="practiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="testId">
+          <End Role="Test" Type="Self.Test" Multiplicity="0..1" />
+          <End Role="AppointmentTest" Type="Self.AppointmentTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Test">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="AppointmentTest">
+              <PropertyRef Name="testId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="SlowlernerDbModelStoreContainer">
           <EntitySet Name="Appointment" EntityType="Self.Appointment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppointmentPractic" EntityType="Self.AppointmentPractic" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppointmentTest" EntityType="Self.AppointmentTest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Collection" EntityType="Self.Collection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PatientTestCollectionFeedback" EntityType="Self.PatientTestCollectionFeedback" Schema="dbo" store:Type="Tables" />
@@ -638,6 +678,14 @@
           <EntitySet Name="TestCollection" EntityType="Self.TestCollection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserPatient" EntityType="Self.UserPatient" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="AppointmentId" Association="Self.AppointmentId">
+            <End Role="Appointment" EntitySet="Appointment" />
+            <End Role="AppointmentPractic" EntitySet="AppointmentPractic" />
+          </AssociationSet>
+          <AssociationSet Name="AppointmetId" Association="Self.AppointmetId">
+            <End Role="Appointment" EntitySet="Appointment" />
+            <End Role="AppointmentTest" EntitySet="AppointmentTest" />
+          </AssociationSet>
           <AssociationSet Name="fk_collectionPtc" Association="Self.fk_collectionPtc">
             <End Role="Collection" EntitySet="Collection" />
             <End Role="PatientTestCollectionFeedback" EntitySet="PatientTestCollectionFeedback" />
@@ -754,10 +802,6 @@
             <End Role="Practice" EntitySet="Practice" />
             <End Role="PracticeCollection" EntitySet="PracticeCollection" />
           </AssociationSet>
-          <AssociationSet Name="fk_pracV" Association="Self.fk_pracV">
-            <End Role="Practice" EntitySet="Practice" />
-            <End Role="Appointment" EntitySet="Appointment" />
-          </AssociationSet>
           <AssociationSet Name="fk_test" Association="Self.fk_test">
             <End Role="Test" EntitySet="Test" />
             <End Role="TestCollection" EntitySet="TestCollection" />
@@ -770,10 +814,6 @@
             <End Role="User" EntitySet="User" />
             <End Role="Test" EntitySet="Test" />
           </AssociationSet>
-          <AssociationSet Name="fk_testV" Association="Self.fk_testV">
-            <End Role="Test" EntitySet="Test" />
-            <End Role="Appointment" EntitySet="Appointment" />
-          </AssociationSet>
           <AssociationSet Name="fk_user" Association="Self.fk_user">
             <End Role="User" EntitySet="User" />
             <End Role="Appointment" EntitySet="Appointment" />
@@ -781,6 +821,14 @@
           <AssociationSet Name="FK_userId" Association="Self.FK_userId">
             <End Role="User" EntitySet="User" />
             <End Role="UserPatient" EntitySet="UserPatient" />
+          </AssociationSet>
+          <AssociationSet Name="PracticeId" Association="Self.PracticeId">
+            <End Role="Practice" EntitySet="Practice" />
+            <End Role="AppointmentPractic" EntitySet="AppointmentPractic" />
+          </AssociationSet>
+          <AssociationSet Name="testId" Association="Self.testId">
+            <End Role="Test" EntitySet="Test" />
+            <End Role="AppointmentTest" EntitySet="AppointmentTest" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -794,16 +842,34 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="userId" Type="Int32" Nullable="false" />
-          <Property Name="testId" Type="Int32" />
-          <Property Name="pracId" Type="Int32" />
           <Property Name="patientId" Type="Int32" Nullable="false" />
           <Property Name="appointmentDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="nextAppointDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="feedback" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="AppointmentPractic" Relationship="Self.AppointmentId" FromRole="Appointment" ToRole="AppointmentPractic" />
+          <NavigationProperty Name="AppointmentTest" Relationship="Self.AppointmetId" FromRole="Appointment" ToRole="AppointmentTest" />
           <NavigationProperty Name="Patient" Relationship="Self.fk_Parient" FromRole="Appointment" ToRole="Patient" />
-          <NavigationProperty Name="Practice" Relationship="Self.fk_pracV" FromRole="Appointment" ToRole="Practice" />
-          <NavigationProperty Name="Test" Relationship="Self.fk_testV" FromRole="Appointment" ToRole="Test" />
           <NavigationProperty Name="User" Relationship="Self.fk_user" FromRole="Appointment" ToRole="User" />
+        </EntityType>
+        <EntityType Name="AppointmentPractic">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="appointmentId" Type="Int32" />
+          <Property Name="practiceId" Type="Int32" />
+          <NavigationProperty Name="Appointment" Relationship="Self.AppointmentId" FromRole="AppointmentPractic" ToRole="Appointment" />
+          <NavigationProperty Name="Practice" Relationship="Self.PracticeId" FromRole="AppointmentPractic" ToRole="Practice" />
+        </EntityType>
+        <EntityType Name="AppointmentTest">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="appointmentId" Type="Int32" />
+          <Property Name="testId" Type="Int32" />
+          <NavigationProperty Name="Appointment" Relationship="Self.AppointmetId" FromRole="AppointmentTest" ToRole="Appointment" />
+          <NavigationProperty Name="Test" Relationship="Self.testId" FromRole="AppointmentTest" ToRole="Test" />
         </EntityType>
         <EntityType Name="Collection">
           <Key>
@@ -970,7 +1036,7 @@
           <Property Name="stage" Type="Int32" Nullable="false" />
           <Property Name="title" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="createBy" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Appointment" Relationship="Self.fk_pracV" FromRole="Practice" ToRole="Appointment" />
+          <NavigationProperty Name="AppointmentPractic" Relationship="Self.PracticeId" FromRole="Practice" ToRole="AppointmentPractic" />
           <NavigationProperty Name="User" Relationship="Self.FK_pracCreateBy" FromRole="Practice" ToRole="User" />
           <NavigationProperty Name="PracticeCollection" Relationship="Self.fk_practice" FromRole="Practice" ToRole="PracticeCollection" />
         </EntityType>
@@ -992,7 +1058,7 @@
           <Property Name="title" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="createBy" Type="Int32" Nullable="false" />
           <Property Name="stageIdentfy" Type="Boolean" />
-          <NavigationProperty Name="Appointment" Relationship="Self.fk_testV" FromRole="Test" ToRole="Appointment" />
+          <NavigationProperty Name="AppointmentTest" Relationship="Self.testId" FromRole="Test" ToRole="AppointmentTest" />
           <NavigationProperty Name="TestCollection" Relationship="Self.fk_test" FromRole="Test" ToRole="TestCollection" />
           <NavigationProperty Name="User" Relationship="Self.FK_TestCreateBy" FromRole="Test" ToRole="User" />
         </EntityType>
@@ -1042,6 +1108,30 @@
           <NavigationProperty Name="Patient" Relationship="Self.FK_patientId" FromRole="UserPatient" ToRole="Patient" />
           <NavigationProperty Name="User" Relationship="Self.FK_userId" FromRole="UserPatient" ToRole="User" />
         </EntityType>
+        <Association Name="AppointmentId">
+          <End Role="Appointment" Type="Self.Appointment" Multiplicity="0..1" />
+          <End Role="AppointmentPractic" Type="Self.AppointmentPractic" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="AppointmentPractic">
+              <PropertyRef Name="appointmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="AppointmetId">
+          <End Role="Appointment" Type="Self.Appointment" Multiplicity="0..1" />
+          <End Role="AppointmentTest" Type="Self.AppointmentTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Appointment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="AppointmentTest">
+              <PropertyRef Name="appointmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_Parient">
           <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
           <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
@@ -1054,30 +1144,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_pracV">
-          <End Role="Practice" Type="Self.Practice" Multiplicity="0..1" />
-          <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Practice">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="pracId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_testV">
-          <End Role="Test" Type="Self.Test" Multiplicity="0..1" />
-          <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Test">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Appointment">
-              <PropertyRef Name="testId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="fk_user">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
@@ -1087,6 +1153,30 @@
             </Principal>
             <Dependent Role="Appointment">
               <PropertyRef Name="userId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="PracticeId">
+          <End Role="Practice" Type="Self.Practice" Multiplicity="0..1" />
+          <End Role="AppointmentPractic" Type="Self.AppointmentPractic" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Practice">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="AppointmentPractic">
+              <PropertyRef Name="practiceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="testId">
+          <End Role="Test" Type="Self.Test" Multiplicity="0..1" />
+          <End Role="AppointmentTest" Type="Self.AppointmentTest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Test">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="AppointmentTest">
+              <PropertyRef Name="testId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1476,6 +1566,8 @@
         </Association>
         <EntityContainer Name="SlowlernerDbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Appointment" EntityType="Self.Appointment" />
+          <EntitySet Name="AppointmentPractic" EntityType="Self.AppointmentPractic" />
+          <EntitySet Name="AppointmentTest" EntityType="Self.AppointmentTest" />
           <EntitySet Name="Collection" EntityType="Self.Collection" />
           <EntitySet Name="Patient" EntityType="Self.Patient" />
           <EntitySet Name="PatientTestCollectionFeedback" EntityType="Self.PatientTestCollectionFeedback" />
@@ -1493,21 +1585,29 @@
           <EntitySet Name="TestCollection" EntityType="Self.TestCollection" />
           <EntitySet Name="User" EntityType="Self.User" />
           <EntitySet Name="UserPatient" EntityType="Self.UserPatient" />
+          <AssociationSet Name="AppointmentId" Association="Self.AppointmentId">
+            <End Role="Appointment" EntitySet="Appointment" />
+            <End Role="AppointmentPractic" EntitySet="AppointmentPractic" />
+          </AssociationSet>
+          <AssociationSet Name="AppointmetId" Association="Self.AppointmetId">
+            <End Role="Appointment" EntitySet="Appointment" />
+            <End Role="AppointmentTest" EntitySet="AppointmentTest" />
+          </AssociationSet>
           <AssociationSet Name="fk_Parient" Association="Self.fk_Parient">
             <End Role="Patient" EntitySet="Patient" />
-            <End Role="Appointment" EntitySet="Appointment" />
-          </AssociationSet>
-          <AssociationSet Name="fk_pracV" Association="Self.fk_pracV">
-            <End Role="Practice" EntitySet="Practice" />
-            <End Role="Appointment" EntitySet="Appointment" />
-          </AssociationSet>
-          <AssociationSet Name="fk_testV" Association="Self.fk_testV">
-            <End Role="Test" EntitySet="Test" />
             <End Role="Appointment" EntitySet="Appointment" />
           </AssociationSet>
           <AssociationSet Name="fk_user" Association="Self.fk_user">
             <End Role="User" EntitySet="User" />
             <End Role="Appointment" EntitySet="Appointment" />
+          </AssociationSet>
+          <AssociationSet Name="PracticeId" Association="Self.PracticeId">
+            <End Role="Practice" EntitySet="Practice" />
+            <End Role="AppointmentPractic" EntitySet="AppointmentPractic" />
+          </AssociationSet>
+          <AssociationSet Name="testId" Association="Self.testId">
+            <End Role="Test" EntitySet="Test" />
+            <End Role="AppointmentTest" EntitySet="AppointmentTest" />
           </AssociationSet>
           <AssociationSet Name="fk_collectionPtc" Association="Self.fk_collectionPtc">
             <End Role="Collection" EntitySet="Collection" />
@@ -1649,12 +1749,28 @@
               <MappingFragment StoreEntitySet="Appointment">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
-                <ScalarProperty Name="testId" ColumnName="testId" />
-                <ScalarProperty Name="pracId" ColumnName="pracId" />
                 <ScalarProperty Name="patientId" ColumnName="patientId" />
                 <ScalarProperty Name="appointmentDate" ColumnName="appointmentDate" />
                 <ScalarProperty Name="nextAppointDate" ColumnName="nextAppointDate" />
                 <ScalarProperty Name="feedback" ColumnName="feedback" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppointmentPractic">
+            <EntityTypeMapping TypeName="SlowlernerDbModel.AppointmentPractic">
+              <MappingFragment StoreEntitySet="AppointmentPractic">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="appointmentId" ColumnName="appointmentId" />
+                <ScalarProperty Name="practiceId" ColumnName="practiceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppointmentTest">
+            <EntityTypeMapping TypeName="SlowlernerDbModel.AppointmentTest">
+              <MappingFragment StoreEntitySet="AppointmentTest">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="appointmentId" ColumnName="appointmentId" />
+                <ScalarProperty Name="testId" ColumnName="testId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

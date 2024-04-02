@@ -26,6 +26,8 @@ namespace LernSpace.Models
         }
     
         public virtual DbSet<Appointment> Appointment { get; set; }
+        public virtual DbSet<AppointmentPractic> AppointmentPractic { get; set; }
+        public virtual DbSet<AppointmentTest> AppointmentTest { get; set; }
         public virtual DbSet<Collection> Collection { get; set; }
         public virtual DbSet<Patient> Patient { get; set; }
         public virtual DbSet<PatientTestCollectionFeedback> PatientTestCollectionFeedback { get; set; }

@@ -17,7 +17,7 @@ namespace LernSpace.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Test()
         {
-            this.Appointment = new HashSet<Appointment>();
+            this.AppointmentTest = new HashSet<AppointmentTest>();
             this.TestCollection = new HashSet<TestCollection>();
         }
     
@@ -28,7 +28,7 @@ namespace LernSpace.Models
         public Nullable<bool> stageIdentfy { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Appointment> Appointment { get; set; }
+        public virtual ICollection<AppointmentTest> AppointmentTest { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TestCollection> TestCollection { get; set; }
         public virtual User User { get; set; }
