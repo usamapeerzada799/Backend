@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -35,7 +36,7 @@ namespace LernSpace.Controllers
             }
         }
         [HttpGet]
-        public HttpResponseMessage userDefindTest(int Uid)
+        public HttpResponseMessage userDefindTest(int Uid,int pid)
         {
             var data = db.Test.Where(e => e.createBy == Uid)
                 .Join(db.TestCollection, test => test.id, testCollection => testCollection.testId, (test, testCollection) => new { test, testCollection })
@@ -57,11 +58,59 @@ namespace LernSpace.Controllers
                     testId=ppc.test.id,
                     Op1ImagePath = db.Collection.Where(c => c.id == ppc.testCollection.op1).Select(c => c.picPath).FirstOrDefault(),
                     Op2ImagePath = db.Collection.Where(c => c.id == ppc.testCollection.op2).Select(c => c.picPath).FirstOrDefault(),
-                    Op3ImagePath = db.Collection.Where(c => c.id == ppc.testCollection.op3).Select(c => c.picPath).FirstOrDefault()
+                    Op3ImagePath = db.Collection.Where(c => c.id == ppc.testCollection.op3).Select(c => c.picPath).FirstOrDefault(),
+                    
                 });
+            if (pid != 0)
+            {
+                var patientAssignedTest = db.Patient.Where(e => e.pid == pid)
+                    .Join(db.Appointment, patient => patient.pid, Appointment => Appointment.patientId, (patient, Appointment) => new { patient, Appointment })
+                    .Join(db.AppointmentTest, Appointment => Appointment.Appointment.id, AppointmentTest => AppointmentTest.appointmentId, (PatientAppointment, AppointmentTest) => new { PatientAppointment, AppointmentTest })
+                    .Join(db.Test, AppointTest => AppointTest.AppointmentTest.testId, Test => Test.id, (PatientAppointAppointTest, Test) => new
+                    {
+                        Test.id
+                    }).ToList();
+                var patientAssPracData = patientAssignedTest.Select(item => new PatienrpracticeTestData
+                {
+                    id = item.id,
+                });
+                var pracdata = data.Select(item => new TestData
+                {
+                   Id= item.id,
+                   UText=item.uText,
+                   EText=item.uText,
+                   Type=item.type,
+                   PicPath=item.picPath,
+                   CGroup=item.C_group,
+                   AudioPath=item.picPath,QuestionTitle=item.picPath,
+                   Op1=item.op1,
+                   Op2=item.op2,
+                   Op3=item.op3,
+                   Title=item.title,
+                   TestId=item.id,
+                   Op1ImagePath=item.Op1ImagePath,
+                   Op2ImagePath=item.Op2ImagePath,
+                   Op3ImagePath=item.Op3ImagePath,
+                   flag=true
+                }).ToList();
 
+                foreach (var item in pracdata)
+                {
+                    if (patientAssPracData.Any(patient => patient.id == item.TestId))
+                    {
+                        // The pracId exists in patientAssignedPractices
+                        // You can perform additional actions here if needed
+                        item.flag = true; // For example, setting flag to true
+                    }
+                }
+                if (pracdata.Any())
+                {
 
-            if (data.Any())
+                    return Request.CreateResponse(HttpStatusCode.OK, pracdata);
+                }
+            }
+
+                if (data.Any())
             {
 
                 return Request.CreateResponse(HttpStatusCode.OK, data);

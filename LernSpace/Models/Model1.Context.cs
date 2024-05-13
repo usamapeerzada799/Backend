@@ -41,6 +41,7 @@ namespace LernSpace.Models
         public virtual DbSet<PersonTestCollection> PersonTestCollection { get; set; }
         public virtual DbSet<Practice> Practice { get; set; }
         public virtual DbSet<PracticeCollection> PracticeCollection { get; set; }
+        public virtual DbSet<Sentence> Sentence { get; set; }
         public virtual DbSet<Test> Test { get; set; }
         public virtual DbSet<TestCollection> TestCollection { get; set; }
         public virtual DbSet<User> User { get; set; }

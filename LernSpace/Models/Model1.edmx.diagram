@@ -4,26 +4,27 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="63a5daf0eaec4d6ca734914e53ad73a9" Name="Diagram1">
-        <EntityTypeShape EntityType="SlowlernerDbModel.Appointment" Width="1.5" PointX="6" PointY="18.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.AppointmentPractic" Width="1.5" PointX="8.25" PointY="27.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.AppointmentTest" Width="1.5" PointX="11.25" PointY="25.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.Collection" Width="1.5" PointX="3" PointY="36.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.Patient" Width="1.5" PointX="0.75" PointY="12.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.PatientTestCollectionFeedback" Width="1.5" PointX="7.5" PointY="33.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.Person" Width="1.5" PointX="3" PointY="18.25" IsExpanded="true" />
+      <Diagram DiagramId="727a1f45b1d44aa0a037a2179b22042f" Name="Diagram1">
+        <EntityTypeShape EntityType="SlowlernerDbModel.Appointment" Width="1.5" PointX="6" PointY="18.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.AppointmentPractic" Width="1.5" PointX="8.25" PointY="27.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.AppointmentTest" Width="1.5" PointX="11.25" PointY="25.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.Collection" Width="1.5" PointX="3" PointY="36.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.Patient" Width="1.5" PointX="0.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.PatientTestCollectionFeedback" Width="1.5" PointX="7.5" PointY="33.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.Person" Width="1.5" PointX="3" PointY="18.375" IsExpanded="true" />
         <EntityTypeShape EntityType="SlowlernerDbModel.PersonIdentification" Width="1.5" PointX="8.25" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.PersonIdentificationFeedback" Width="1.5" PointX="8.25" PointY="18.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.PersonIdentificationFeedback" Width="1.5" PointX="8.25" PointY="19" IsExpanded="true" />
         <EntityTypeShape EntityType="SlowlernerDbModel.PersonPicture" Width="1.5" PointX="5.25" PointY="22.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.PersonPracticCollection" Width="1.5" PointX="8.25" PointY="16.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.PersonPractice" Width="1.5" PointX="3" PointY="14.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.PersonTest" Width="1.5" PointX="6" PointY="14.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.PersonTestCollection" Width="1.5" PointX="8.25" PointY="22.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.Practice" Width="1.5" PointX="3" PointY="29.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.PracticeCollection" Width="1.5" PointX="5.25" PointY="30" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.Test" Width="1.5" PointX="3" PointY="32.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.TestCollection" Width="1.5" PointX="5.25" PointY="33.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="SlowlernerDbModel.User" Width="1.5" PointX="0.75" PointY="17.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.PersonPracticCollection" Width="1.5" PointX="8.25" PointY="16.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.PersonPractice" Width="1.5" PointX="3" PointY="14.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.PersonTest" Width="1.5" PointX="6" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.PersonTestCollection" Width="1.5" PointX="8.25" PointY="22.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.Practice" Width="1.5" PointX="3" PointY="29.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.PracticeCollection" Width="1.5" PointX="5.25" PointY="30.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.Sentence" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.Test" Width="1.5" PointX="3" PointY="32.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.TestCollection" Width="1.5" PointX="5.25" PointY="33.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="SlowlernerDbModel.User" Width="1.5" PointX="0.75" PointY="18" IsExpanded="true" />
         <EntityTypeShape EntityType="SlowlernerDbModel.UserPatient" Width="1.5" PointX="3" PointY="23.75" IsExpanded="true" />
         <AssociationConnector Association="SlowlernerDbModel.AppointmentId" ManuallyRouted="false" />
         <AssociationConnector Association="SlowlernerDbModel.AppointmetId" ManuallyRouted="false" />

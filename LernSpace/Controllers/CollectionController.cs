@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
@@ -99,6 +100,71 @@ namespace LernSpace.Controllers
 
             var data= db.Collection.Where(e=>e.id==Cid).Select(c => new {c.picPath,c.eText,c.uText}).ToList();
             return Request.CreateResponse(data);
+        }
+/*
+        [HttpGet]
+        public HttpResponseMessage Sentences()
+        {
+            List<string> twoWordSentences = new List<string>
+        {
+            "The quick",
+            "Brown fox",
+            "Jumps over",
+            "Lazy dog"
+        };
+            string thirdWord = "lazy";
+            List<string> threeWordSentences = AddThirdWord(twoWordSentences, thirdWord);
+
+            // Print the modified sentences
+            foreach (string sentence in threeWordSentences)
+            {
+                Console.WriteLine(sentence);
+            }
+        
+            return Request.CreateResponse(threeWordSentences);
+        }
+        static List<string> AddThirdWord(List<string> twoWordSentences, string thirdWord)
+        {
+            List<string> threeWordSentences = new List<string>();
+
+            foreach (string sentence in twoWordSentences)
+            {
+                string[] words = sentence.Split(' ');
+                if (words.Length == 2)
+                {
+                    string threeWordSentence = $"{words[0]} {words[1]} {thirdWord}";
+                    threeWordSentences.Add(threeWordSentence);
+                }
+            }
+
+            return threeWordSentences;
+        }*/
+        [HttpGet]
+        public HttpResponseMessage GetSentences()
+        {
+            var twoWordSentences = db.Sentence.Select(x => new { x.sentence1, x.C_group }).ToList();
+            var collect = db.Collection.Select(x => new { x.eText, x.C_group,x.type }).ToList();
+            List<string> data = new List<string>();
+
+            foreach (var item in twoWordSentences)
+            {
+                foreach (var collection in collect)
+                {
+                    string abc = "";
+                    if (item.C_group == "any" && collection.type!="A".ToLower())
+                    {
+                        abc = $"{item.sentence1} {collection.eText}";
+                    }
+                    else if (item.C_group == collection.C_group)
+                    {
+                        abc = $"{item.sentence1} {collection.eText}";
+                    }
+                    if(abc!="")
+                    data.Add(abc);
+                }
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, data);
         }
     }
 }

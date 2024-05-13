@@ -160,6 +160,14 @@
           <Property Name="collectId" Type="int" Nullable="false" />
           <Property Name="pracId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="Sentence">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="sentence" Type="nvarchar" MaxLength="100" />
+          <Property Name="_group" Type="varchar" MaxLength="100" />
+        </EntityType>
         <EntityType Name="Test">
           <Key>
             <PropertyRef Name="id" />
@@ -181,6 +189,7 @@
           <Property Name="op2" Type="int" />
           <Property Name="op3" Type="int" />
           <Property Name="questionTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="questionAudio" Type="varchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -674,6 +683,7 @@
           <EntitySet Name="PersonTestCollection" EntityType="Self.PersonTestCollection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Practice" EntityType="Self.Practice" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PracticeCollection" EntityType="Self.PracticeCollection" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Sentence" EntityType="Self.Sentence" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Test" EntityType="Self.Test" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TestCollection" EntityType="Self.TestCollection" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
@@ -1049,6 +1059,14 @@
           <Property Name="pracId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Practice" Relationship="Self.fk_practice" FromRole="PracticeCollection" ToRole="Practice" />
         </EntityType>
+        <EntityType Name="Sentence">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="sentence1" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="C_group" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
         <EntityType Name="Test">
           <Key>
             <PropertyRef Name="id" />
@@ -1073,6 +1091,7 @@
           <Property Name="op2" Type="Int32" />
           <Property Name="op3" Type="Int32" />
           <Property Name="questionTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="questionAudio" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Collection" Relationship="Self.fk_collectionT" FromRole="TestCollection" ToRole="Collection" />
           <NavigationProperty Name="Collection1" Relationship="Self.FK_op1" FromRole="TestCollection" ToRole="Collection" />
           <NavigationProperty Name="Collection2" Relationship="Self.FK_op2" FromRole="TestCollection" ToRole="Collection" />
@@ -1581,6 +1600,7 @@
           <EntitySet Name="PersonTestCollection" EntityType="Self.PersonTestCollection" />
           <EntitySet Name="Practice" EntityType="Self.Practice" />
           <EntitySet Name="PracticeCollection" EntityType="Self.PracticeCollection" />
+          <EntitySet Name="Sentence" EntityType="Self.Sentence" />
           <EntitySet Name="Test" EntityType="Self.Test" />
           <EntitySet Name="TestCollection" EntityType="Self.TestCollection" />
           <EntitySet Name="User" EntityType="Self.User" />
@@ -1915,6 +1935,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="Sentence">
+            <EntityTypeMapping TypeName="SlowlernerDbModel.Sentence">
+              <MappingFragment StoreEntitySet="Sentence">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="sentence1" ColumnName="sentence" />
+                <ScalarProperty Name="C_group" ColumnName="_group" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Test">
             <EntityTypeMapping TypeName="SlowlernerDbModel.Test">
               <MappingFragment StoreEntitySet="Test">
@@ -1936,6 +1965,7 @@
                 <ScalarProperty Name="op2" ColumnName="op2" />
                 <ScalarProperty Name="op3" ColumnName="op3" />
                 <ScalarProperty Name="questionTitle" ColumnName="questionTitle" />
+                <ScalarProperty Name="questionAudio" ColumnName="questionAudio" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

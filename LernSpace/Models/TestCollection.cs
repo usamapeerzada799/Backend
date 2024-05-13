@@ -23,10 +23,11 @@ namespace LernSpace.Models
         public int id { get; set; }
         public int collectId { get; set; }
         public int testId { get; set; }
-        public Nullable<int> op1 { get; set; }
-        public Nullable<int> op2 { get; set; }
-        public Nullable<int> op3 { get; set; }
+        public int op1 { get; set; }
+        public int op2 { get; set; }
+        public int op3 { get; set; }
         public string questionTitle { get; set; }
+        public string questionAudio { get; set; }
     
         public virtual Collection Collection { get; set; }
         public virtual Collection Collection1 { get; set; }

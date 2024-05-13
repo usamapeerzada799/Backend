@@ -36,8 +36,9 @@ namespace LernSpace.Controllers
             var password= request["password"];
             var profilePic = request.Files["profilePic"];
             
-            var validation=db.User.Where(e=>e.username==username).ToList();
-            if(validation.Any())
+            var validation1=db.User.Where(e=>e.username==username).ToList();
+            var validation2 = db.Patient.Where(e => e.userName == username).ToList();
+            if (validation1.Any() || validation2.Any())
             {
                 return Request.CreateResponse(HttpStatusCode.OK,"username Already exist use another username");
             }
@@ -57,7 +58,7 @@ namespace LernSpace.Controllers
 
         [HttpGet]
         public HttpResponseMessage SignIn(string username,string password)
-        {
+        {   
             var data=db.User.Where(e=>e.username== username && e.password==password).Select(user=> new {user.uid,user.type,user.profPicPath,user.name}).FirstOrDefault();
             if (data == null)
             {
@@ -250,18 +251,44 @@ namespace LernSpace.Controllers
             {
                 var data = db.User.Where(e => e.uid == cid)
                     .Join(db.UserPatient, user => user.uid, UserPatient => UserPatient.userId, (user, UserPatient) => new { user, UserPatient })
-                    .Join(db.Appointment, user => user.UserPatient.patientId, Appointment => Appointment.patientId, (app, pat) => new
+                    .Join(db.Patient, user => user.UserPatient.patientId, patient => patient.pid, (app, pat) => new
                     {
-                        pat.id,
-                        pat.patientId,
+                        pat.pid,
+                        pat.name,
                       
-                        pat.feedback,
-                        pat.nextAppointDate,
+                        pat.profPicPath,
+                        pat.stage,
 
                     }).FirstOrDefault();
                    /* {
                         UserPatient.patientId
                     }).FirstOrDefault(); */
+
+                return Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "error ");
+            }
+        }
+        [HttpGet]
+        public HttpResponseMessage GetPatientAppointDateAndId(int cid)
+        {
+            try
+            {
+                var data = db.User.Where(e => e.uid == cid)
+                    .Join(db.UserPatient, user => user.uid, UserPatient => UserPatient.userId, (user, UserPatient) => new { user, UserPatient })
+                    .Join(db.Appointment, user => user.UserPatient.patientId, appointment => appointment.patientId, (app, pat) => new
+                    {
+                        pat.id,
+                        app.UserPatient.patientId,
+
+                        
+
+                    }).FirstOrDefault();
+                /* {
+                     UserPatient.patientId
+                 }).FirstOrDefault(); */
 
                 return Request.CreateResponse(HttpStatusCode.OK, data);
             }
@@ -289,6 +316,31 @@ namespace LernSpace.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK, ex.Message);
             }
             
+        }
+        [HttpGet]
+        public HttpResponseMessage NextVisit(int pid)
+        {
+            try
+            {
+                var data = db.Patient.Where(e => e.pid == pid)
+                    .Join(db.Appointment, patient => patient.pid, appoint => appoint.patientId, (Patient, appoint) => new { Patient, appoint })
+                    .Join(db.User, User => User.appoint.userId, user => user.uid, (patAppoint, user) => new {
+                       patAppoint.appoint.nextAppointDate,
+                       user.name
+
+                    }).OrderByDescending(patAppoint => patAppoint.nextAppointDate) // Order by appointment date descending
+                        .Select(result => new {
+                            result.nextAppointDate,
+                            result.name
+                        })
+                        .FirstOrDefault();
+                return Request.CreateResponse(HttpStatusCode.OK, data);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.OK, ex.Message);
+            }
+
         }
     }
 }
